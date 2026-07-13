@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3分でわかる お金との向き合い方診断</title>
+  <style>
+    :root{
+      --bg:#f7f5ef;
+      --card:#ffffff;
+      --text:#263128;
+      --muted:#6f786f;
+      --accent:#7f9a72;
+      --accent-dark:#5f7955;
+      --line:#dde4da;
+      --soft:#edf3ea;
+      --warn:#fff7df;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+      background:linear-gradient(180deg,#f7f5ef 0%,#eef4ea 100%);
+      color:var(--text);
+      line-height:1.7;
+    }
+    .wrap{max-width:760px;margin:0 auto;padding:28px 16px 56px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:28px;
+      box-shadow:0 12px 36px rgba(38,49,40,.08);
+    }
+    h1{font-size:clamp(28px,5vw,44px);line-height:1.25;margin:0 0 14px}
+    h2{font-size:26px;line-height:1.35;margin:0 0 12px}
+    h3{font-size:20px;margin:22px 0 8px}
+    p{margin:0 0 14px}
+    .eyebrow{font-weight:700;color:var(--accent-dark);letter-spacing:.06em}
+    .lead{font-size:18px}
+    .note{
+      background:var(--warn);
+      border-radius:14px;
+      padding:14px 16px;
+      font-size:14px;
+      color:#6a5b2a;
+      margin-top:18px;
+    }
+    .progress-wrap{
+      position:sticky;top:0;z-index:5;
+      padding:10px 0 14px;
+      background:linear-gradient(180deg,rgba(247,245,239,.98) 75%,rgba(247,245,239,0));
+    }
+    .progress{
+      height:10px;background:#e4e9e1;border-radius:999px;overflow:hidden;
+    }
+    .bar{height:100%;width:0;background:var(--accent);transition:.25s}
+    .progress-text{font-size:13px;color:var(--muted);margin-top:5px;text-align:right}
+    .question{
+      border-top:1px solid var(--line);
+      padding:24px 0;
+    }
+    .question:first-child{border-top:0}
+    .qnum{font-size:13px;color:var(--accent-dark);font-weight:700}
+    .qtext{font-size:19px;font-weight:700;margin:5px 0 14px}
+    .choices{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+    .choice input{position:absolute;opacity:0;pointer-events:none}
+    .choice label{
+      display:flex;align-items:center;justify-content:center;
+      min-height:52px;padding:8px 4px;text-align:center;
+      border:1px solid var(--line);border-radius:12px;
+      cursor:pointer;background:#fff;font-size:13px;
+      transition:.15s;
+    }
+    .choice input:checked + label{
+      background:var(--soft);border-color:var(--accent);
+      color:var(--accent-dark);font-weight:700;
+      box-shadow:0 0 0 2px rgba(127,154,114,.14);
+    }
+    .scale{display:flex;justify-content:space-between;color:var(--muted);font-size:12px;margin-top:6px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      border:0;border-radius:999px;padding:14px 24px;
+      background:var(--accent);color:white;font-weight:800;
+      font-size:16px;cursor:pointer;text-decoration:none;
+      transition:.15s;
+    }
+    .btn:hover{background:var(--accent-dark);transform:translateY(-1px)}
+    .btn.secondary{background:#eef2ec;color:var(--text)}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+    .hidden{display:none}
+    .result-badge{
+      display:inline-block;background:var(--soft);color:var(--accent-dark);
+      border-radius:999px;padding:7px 12px;font-weight:800;margin-bottom:10px
+    }
+    .result-box{
+      border:1px solid var(--line);border-radius:16px;padding:18px;margin:18px 0;
+      background:#fbfcfa;
+    }
+    .meter{display:grid;gap:10px;margin-top:18px}
+    .meter-row{display:grid;grid-template-columns:120px 1fr 42px;gap:10px;align-items:center}
+    .meter-track{height:10px;background:#e8ece6;border-radius:999px;overflow:hidden}
+    .meter-fill{height:100%;background:var(--accent);border-radius:999px}
+    ul{padding-left:1.2em}
+    .footer{font-size:13px;color:var(--muted);margin-top:18px}
+    @media (max-width:600px){
+      .card{padding:22px 18px;border-radius:18px}
+      .choices{grid-template-columns:1fr}
+      .choice label{justify-content:flex-start;padding-left:14px;min-height:46px}
+      .scale{display:none}
+      .meter-row{grid-template-columns:88px 1fr 34px;font-size:12px}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <section id="intro" class="card">
+    <div class="eyebrow">🌱 はっぱの無料ワーク</div>
+    <h1>3分でわかる<br>お金との向き合い方診断</h1>
+    <p class="lead">「使っちゃダメ」と分かっているのに、なぜか使ってしまう。その背景にある傾向を、20問から整理します。</p>
+    <p>借金400万円になった私が、自分のお金の使い方と向き合うために作った診断です。正解・不正解はありません。今の自分に近い回答を選んでください。</p>
+    <div class="note">この診断は医療・心理・金融上の専門的な判定ではなく、自分の傾向に気づくためのセルフチェックです。</div>
+    <div class="actions">
+      <button class="btn" onclick="startQuiz()">診断を始める</button>
+    </div>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <div class="progress-wrap">
+      <div class="progress"><div id="bar" class="bar"></div></div>
+      <div id="progressText" class="progress-text">0 / 20</div>
+    </div>
+    <form id="quizForm" class="card"></form>
+  </section>
+
+  <section id="result" class="card hidden">
+    <div class="eyebrow">診断結果</div>
+    <div id="resultContent"></div>
+    <div class="actions">
+      <button class="btn secondary" onclick="restart()">もう一度やる</button>
+      <a id="noteButton" class="btn" href="#" target="_blank" rel="noopener">noteで続きを読む</a>
+    </div>
+    <p class="footer">結果は一つに決めつけるものではありません。複数の傾向が近い場合もあります。</p>
+  </section>
+
+</div>
+
+<script>
+const NOTE_URL = "https://note.com/"; // ← あなたのnote記事URLに変更
+
+const types = {
+  reward: {
+    name: "頑張ったご褒美タイプ",
+    emoji: "🍰",
+    summary: "疲れや達成感を、買い物で回復させやすい傾向があります。",
+    detail: "ご褒美を持つこと自体は悪くありません。ただ、休む・褒める・気分転換する方法が「買うこと」に偏ると、頑張るほど支出が増えやすくなります。",
+    action: [
+      "買い物以外のご褒美を3つ書き出す",
+      "購入前に「今ほしいのは物？休息？」と聞く",
+      "ご褒美予算を先に決めておく"
+    ],
+    journal: "最近の買い物で、本当に欲しかったのは「物」でしたか？ それとも、休息・安心・承認でしたか？"
+  },
+  anxiety: {
+    name: "不安から目をそらすタイプ",
+    emoji: "🌧️",
+    summary: "お金の不安が強いほど、残高や支出を見ることを後回しにしやすい傾向があります。",
+    detail: "数字を見るのが怖いのは、意志が弱いからではありません。不安を避けて心を守ろうとしている可能性があります。ただ、見ない時間が長いほど不安が大きくなることもあります。",
+    action: [
+      "今日は残高を確認するだけにする",
+      "支出を反省せず、事実だけ記録する",
+      "一人で抱えず、必要なら専門家へ相談する"
+    ],
+    journal: "お金について考えるとき、いちばん怖い未来は何ですか？ それは今すぐ起きる事実ですか？"
+  },
+  approval: {
+    name: "人と比べてしまうタイプ",
+    emoji: "✨",
+    summary: "人からどう見られるか、周囲に遅れたくない気持ちが支出につながりやすい傾向があります。",
+    detail: "服、美容、部屋、体験などを通して、自分の価値を確かめたくなることがあります。欲しい物を持つことが悪いのではなく、「誰のために欲しいのか」を知ることが大切です。",
+    action: [
+      "SNSを見た直後の買い物は24時間保留する",
+      "欲しい理由を「自分のため／人の目」に分ける",
+      "比較を強めるアカウントから少し離れる"
+    ],
+    journal: "その買い物を誰にも見せられなくても、同じように欲しいと思いますか？"
+  },
+  automatic: {
+    name: "気づいたら使っているタイプ",
+    emoji: "🛒",
+    summary: "小さな支出や習慣的な支払いが積み重なりやすい傾向があります。",
+    detail: "一回の金額が小さいため、使った感覚が残りにくいタイプです。問題は浪費家であることより、支出を振り返る仕組みがないことかもしれません。",
+    action: [
+      "家計簿アプリで自動記録を始める",
+      "週に一度だけ支出一覧を見る",
+      "コンビニや通販の前に買う物を決める"
+    ],
+    journal: "先月、何に一番お金を使ったかを答えられますか？ 分からない場合、どこからなら確認できそうですか？"
+  }
+};
+
+const questions = [
+  ["疲れた日は、自分へのご褒美として何か買いたくなる。","reward"],
+  ["『今日は頑張ったから』と予定外の買い物をすることがある。","reward"],
+  ["嫌なことがあった日は、食べ物や買い物で気分を変えたくなる。","reward"],
+  ["買った物そのものより、買う瞬間に気持ちが上がる。","reward"],
+  ["自分を労う方法として、買い物や外食を選ぶことが多い。","reward"],
+
+  ["銀行残高やカード利用額を見るのが怖い。","anxiety"],
+  ["お金のことを考えると不安になり、後回しにしてしまう。","anxiety"],
+  ["請求額が気になっても、確認を先延ばしにすることがある。","anxiety"],
+  ["家計簿をつけると落ち込みそうで、続かない。","anxiety"],
+  ["お金の悩みを人に相談するのが恥ずかしい。","anxiety"],
+
+  ["SNSを見ると、欲しい服・コスメ・家具などが増える。","approval"],
+  ["周りより遅れている、劣っていると感じることがある。","approval"],
+  ["人から素敵に見られるために買うことがある。","approval"],
+  ["持ち物や体験で、自分の価値を示したくなることがある。","approval"],
+  ["他人の生活と比べた後は、お金を使いたくなりやすい。","approval"],
+
+  ["『このくらいの金額なら』と小さな買い物を重ねる。","automatic"],
+  ["コンビニや通販で、予定になかった物も買うことがある。","automatic"],
+  ["レシートや利用明細をほとんど見ない。","automatic"],
+  ["今月、何に一番お金を使ったかすぐには答えられない。","automatic"],
+  ["使っているサブスクをすべて把握していない。","automatic"]
+];
+
+const labels = [
+  "まったく当てはまらない",
+  "あまり当てはまらない",
+  "どちらともいえない",
+  "少し当てはまる",
+  "とても当てはまる"
+];
+
+function startQuiz(){
+  document.getElementById("intro").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  buildQuiz();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function buildQuiz(){
+  const form = document.getElementById("quizForm");
+  form.innerHTML = "";
+  questions.forEach((q,i)=>{
+    const block = document.createElement("div");
+    block.className = "question";
+    block.innerHTML = `
+      <div class="qnum">Q${i+1}</div>
+      <div class="qtext">${q[0]}</div>
+      <div class="choices">
+        ${labels.map((label,idx)=>`
+          <div class="choice">
+            <input type="radio" id="q${i}_${idx+1}" name="q${i}" value="${idx+1}">
+            <label for="q${i}_${idx+1}">${label}</label>
+          </div>`).join("")}
+      </div>
+      <div class="scale"><span>当てはまらない</span><span>当てはまる</span></div>
+    `;
+    form.appendChild(block);
+  });
+  const actions = document.createElement("div");
+  actions.className = "actions";
+  actions.innerHTML = `<button type="button" class="btn" onclick="calculate()">結果を見る</button>`;
+  form.appendChild(actions);
+
+  form.addEventListener("change", updateProgress);
+  document.getElementById("noteButton").href = NOTE_URL;
+}
+
+function updateProgress(){
+  const answered = new Set();
+  new FormData(document.getElementById("quizForm")).forEach((v,k)=>answered.add(k));
+  const n = answered.size;
+  document.getElementById("bar").style.width = `${n/questions.length*100}%`;
+  document.getElementById("progressText").textContent = `${n} / ${questions.length}`;
+}
+
+function calculate(){
+  const form = document.getElementById("quizForm");
+  const data = new FormData(form);
+  if([...data.keys()].length < questions.length){
+    alert("まだ回答していない質問があります。すべて回答してから結果を見てください。");
+    return;
+  }
+  const scores = {reward:0, anxiety:0, approval:0, automatic:0};
+  questions.forEach((q,i)=>{
+    scores[q[1]] += Number(data.get(`q${i}`));
+  });
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const primary = sorted[0][0];
+  const secondary = sorted[1][0];
+  const maxPossible = 25;
+
+  const t = types[primary];
+  const close = scores[primary] - scores[secondary] <= 2;
+
+  const meters = Object.entries(scores).map(([key,val])=>`
+    <div class="meter-row">
+      <div>${types[key].emoji} ${types[key].name.replace("タイプ","")}</div>
+      <div class="meter-track"><div class="meter-fill" style="width:${val/maxPossible*100}%"></div></div>
+      <div>${val}</div>
+    </div>`).join("");
+
+  document.getElementById("resultContent").innerHTML = `
+    <div class="result-badge">${t.emoji} あなたの強い傾向</div>
+    <h2>${t.name}</h2>
+    <p class="lead">${t.summary}</p>
+    <p>${t.detail}</p>
+
+    ${close ? `<div class="note">次に高かったのは「${types[secondary].name}」です。今回は2つの傾向が近く出ています。</div>` : ""}
+
+    <div class="result-box">
+      <h3>今日からできること</h3>
+      <ul>${t.action.map(x=>`<li>${x}</li>`).join("")}</ul>
+    </div>
+
+    <div class="result-box">
+      <h3>今日のジャーナリング</h3>
+      <p>${t.journal}</p>
+    </div>
+
+    <h3>4つの傾向スコア</h3>
+    <div class="meter">${meters}</div>
+
+    <p class="footer">点数が高いほど、その傾向が今のあなたに当てはまりやすいという目安です。</p>
+  `;
+
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function restart(){
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("intro").classList.remove("hidden");
+  document.getElementById("quizForm").innerHTML = "";
+  document.getElementById("bar").style.width = "0";
+  document.getElementById("progressText").textContent = "0 / 20";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+</script>
+</body>
+</html>
